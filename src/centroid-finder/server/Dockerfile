@@ -1,17 +1,34 @@
-FROM node:20-slim
+## Stage 1: build Java processor using Maven
+FROM maven:3.9-eclipse-temurin-21 AS java-builder
+WORKDIR /build
 
-# Create app directory
+# copy processor sources (build context must include parent path)
+COPY processor/pom.xml ./
+COPY processor/src ./src
+RUN mvn -B clean package -DskipTests
+
+## Stage 2: final Node runtime image
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Install dependencies (production only)
-COPY package*.json ./
+# Install Node 20 (from NodeSource), ffmpeg, and other utilities
+RUN apt-get update && apt-get install -y curl ca-certificates gnupg \
+  && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get install -y nodejs ffmpeg && rm -rf /var/lib/apt/lists/*
+
+# Install Node dependencies
+COPY server/package*.json ./
 RUN npm ci --only=production
 
 # Copy server source
-COPY . .
+COPY server/ ./
 
-# Install ffmpeg (used by fluent-ffmpeg)
-RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+# Copy the assembled processor JAR from the builder stage
+COPY --from=java-builder /build/target/videoprocessor.jar ./processor.jar
+
+# Install ffmpeg and Java runtime
+# (Java runtime already provided by this base image)
+
 
 # Create runtime directories for persisted data
 RUN mkdir -p /app/videos /app/results /app/thumbnails
