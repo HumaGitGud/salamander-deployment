@@ -22,10 +22,12 @@ services:
       - VIDEO_DIR=/app/videos
       - THUMBNAIL_DIR=/app/thumbnails
       - JOBS_FILE=/app/jobs.json
+      - JAR_PATH=/app/processor.jar
     volumes:
       - ./centroid-finder/server/results:/app/results
       - ./centroid-finder/server/videos:/app/videos
       - ./centroid-finder/server/thumbnails:/app/thumbnails
+      - ./centroid-finder/processor/target/videoprocessor.jar:/app/processor.jar:ro
     depends_on:
       - processor
 
