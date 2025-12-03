@@ -20,7 +20,8 @@ ENV PORT=3000 \
     RESULTS_DIR=/app/results \
     VIDEO_DIR=/app/videos \
     THUMBNAIL_DIR=/app/thumbnails \
-    JOBS_FILE=/app/jobs.json
+    JOBS_FILE=/app/jobs.json \
+    JAR_PATH=/app/processor.jar
 
 EXPOSE 3000
 
