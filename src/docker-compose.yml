@@ -11,7 +11,8 @@ services:
 
   server:
     build:
-      context: ./centroid-finder/server
+      context: ./centroid-finder
+      dockerfile: server/Dockerfile
     ports:
       - "3001:3000"
     environment:
@@ -25,17 +26,6 @@ services:
       - ./centroid-finder/server/results:/app/results
       - ./centroid-finder/server/videos:/app/videos
       - ./centroid-finder/server/thumbnails:/app/thumbnails
-      - ./centroid-finder/processor/target/videoprocessor.jar:/app/processor.jar:ro
-    depends_on:
-      - processor
-
-  processor:
-    build:
-      context: ./centroid-finder/processor
-    volumes:
-      - ./centroid-finder/server/results:/app/results
-      - ./centroid-finder/server/videos:/app/videos
-    restart: "no"
 
 volumes:
   results:
