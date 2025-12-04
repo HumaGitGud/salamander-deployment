@@ -51,7 +51,7 @@ jobs:
         run: |
           echo "Starting Docker containers..."
           cd src
-          docker-compose up -d
+          docker compose up -d
           # Wait for services to be ready
           sleep 10
           echo "Docker containers started!"
@@ -68,7 +68,7 @@ jobs:
         if: always()
         run: |
           cd src
-          docker-compose down
+          docker compose down
 
       - name: Test Summary
         if: success()
