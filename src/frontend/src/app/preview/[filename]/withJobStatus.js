@@ -8,13 +8,15 @@ export function withJobStatus(WrappedComponent) {
     const [status, setStatus] = useState(null);
     const [resultFile, setResultFile] = useState(null);
 
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
     // fetch and display job status using interval
     useEffect(() => {
       if (!jobId) return;
 
       const interval = setInterval(async () => {
         try {
-          const res = await fetch(`http://localhost:3001/process/${jobId}/status`);
+          const res = await fetch(`${API_URL}/process/${jobId}/status`);
           if (!res.ok) throw new Error("Failed to fetch status");
 
           const data = await res.json();
