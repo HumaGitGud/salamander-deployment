@@ -4,7 +4,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Development/Local files
+# Next.js Build
 .next
+
+# Secrets
+.env
+.env.local
+.env.production
+
+# Git & System
 .git
 .DS_Store
+.vscode
+.idea
