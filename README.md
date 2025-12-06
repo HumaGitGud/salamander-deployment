@@ -18,14 +18,14 @@ A full-stack application for video processing and centroid detection. Upload vid
 ### Build & Run
 
 ```bash
-cd src/...
-npm install (run in node folders)
-remove .example from .env file (contents within are accurate to this project structure)
+cd src/
 docker compose build
-docker compose up -d
+docker compose up
 ```
 
-Access the app at **http://localhost:3000**
+Access the app at:
+Localhost: **http://localhost:3000**
+VM: **http://vm-ip:3000**
 
 ### Check Logs
 

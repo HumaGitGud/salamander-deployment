@@ -7,10 +7,12 @@ import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
 export default function VideoChooserPage() {
   const [videos, setVideos] = useState([]);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await fetch('http://localhost:3001/videos');
+        const res = await fetch(`${API_URL}/videos`);
         const data = await res.json();
         setVideos(data);
       } catch (error) {

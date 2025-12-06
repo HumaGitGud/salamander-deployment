@@ -17,6 +17,8 @@ function PreviewPage({ params, setJobId, status, resultFile, setStatus }) {
   const originalImgRef = useRef(null);
   const canvasRef = useRef(null);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
   // set canvas size and draw the binarized image
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -96,7 +98,7 @@ function PreviewPage({ params, setJobId, status, resultFile, setStatus }) {
     try {
       const hex = binarizeSettings.color.replace('#', '').toUpperCase();
       const res = await fetch(
-        `http://localhost:3001/process/${filename}?targetColor=${hex}&threshold=${binarizeSettings.threshold}`,
+        `${API_URL}/process/${filename}?targetColor=${hex}&threshold=${binarizeSettings.threshold}`,
         { method: 'POST' }
       );
       if (!res.ok) throw new Error("Failed to start processing");
@@ -129,7 +131,7 @@ function PreviewPage({ params, setJobId, status, resultFile, setStatus }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={originalImgRef}
-            src={`http://localhost:3001/thumbnail/${filename}`}
+            src={`${API_URL}/thumbnail/${filename}`}
             alt={`Original ${filename}`}
             style={{ maxWidth: 440, maxHeight: 440, display: 'block' }}
             crossOrigin="anonymous"
@@ -206,7 +208,7 @@ function PreviewPage({ params, setJobId, status, resultFile, setStatus }) {
       {/* download link */}
       {status === 'done' && resultFile && (
         <Typography textAlign="center">
-          <a href={`http://localhost:3001/results/${resultFile}`}>Download CSV result</a>
+          <a href={`${API_URL}/results/${resultFile}`}>Download CSV result</a>
         </Typography>
       )}
     </Box>

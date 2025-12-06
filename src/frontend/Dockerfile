@@ -1,47 +1,37 @@
-# Stage 1: Build the Next.js application (using a node base image)
+# Stage 1: Builder
 FROM node:20-alpine AS builder
 
-# Set the working directory for all subsequent commands
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock)
-# This is done separately to leverage Docker caching for dependencies
+# Install dependencies (cached based on package-lock.json)
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application source code
+# Copy source code
 COPY . .
 
-# Build the Next.js application
-# 'output: "standalone"' makes the build output highly optimized for Docker
-# by putting all necessary files (including node_modules) into a single folder.
+# Inject build arguments and create production build
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+
 RUN npm run build
 
-# Stage 2: Create the final, lean production image
-# Use a node base image for running the app
+# Stage 2: Production Runner
 FROM node:20-alpine AS runner
 
-# Set the environment variable for standalone output
+WORKDIR /app
+
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Next.js standalone output copies all required dependencies (node_modules)
-# into the .next/standalone folder, making the build image much smaller.
-WORKDIR /app
-
-# Copy the standalone output from the builder stage
+# Copy standalone build and static assets
 COPY --from=builder /app/.next/standalone ./
-# Copy the static assets and public directory
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Set the port the Next.js app will listen on
 EXPOSE 3000
 
-# Start the Next.js production server
-# The entry point is the node server created in the standalone build output
+# Start server
 CMD ["node", "server.js"]
