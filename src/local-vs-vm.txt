@@ -1,0 +1,5 @@
+Change this line when switching from local dev to deployment version:
+
+docker-compose.yml:
+NEXT_PUBLIC_API_URL: "http://VM-IP:PORT"
+NEXT_PUBLIC_API_URL: "http://localhost:PORT"
